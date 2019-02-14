@@ -111,7 +111,6 @@ def convolve2d(img, kernel):
 
     img_conv = [[0 for _ in range(n)] for _ in range(m)]
     
-
     for i in range(m):
         for j in range(n):
             img_ = utils.crop(img_padded, i, i + k, j, j + l)

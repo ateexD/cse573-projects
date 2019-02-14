@@ -65,7 +65,6 @@ def detect(img, template):
             y: column that the character appears (starts from 0).
     """
     # TODO: implement this function.
-    raise NotImplementedError
     return coordinates
 
 
