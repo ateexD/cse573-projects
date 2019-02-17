@@ -106,8 +106,10 @@ def convolve2d(img, kernel):
     # Filter dimensions
     k, l = len(kernel), len(kernel[0])
     
-    flipped_filter = utils.flip_x(kernel)
+    flipped_filter = utils.flip_y(kernel)
+    # flipped_filter = kernel
     img_padded = utils.zero_pad(img, k - 1, l - 1)
+    # img_padded = utils.flip_y(img_padded)
 
     img_conv = [[0 for _ in range(n)] for _ in range(m)]
     
@@ -119,6 +121,16 @@ def convolve2d(img, kernel):
 
     return img_conv
 
+def normalize_255(img):
+    img_max = max((max(x) for x in img))
+    img_min = min((min(x) for x in img))
+
+    for i in range(len(img)):
+        for j in range(len(img[0])):
+            img[i][j] = (img[i][j] - img_min) * 255.0 / (img_max - img_min)
+            img[i][j] = min(img[i][j], 255.0)
+            img[i][j] = max(img[i][j], 0.)
+    return img
 
 def normalize(img):
     """Normalizes a given image.
@@ -185,11 +197,10 @@ def edge_magnitude(edge_x, edge_y):
         edge_mag: nested list (int), image containing magnitude of detected edges.
     """
     # TODO: implement this function.
-    edge_x = utils.elementwise_mul(edge_x, edge_x)
-    edge_y = utils.elementwise_mul(edge_y, edge_y)
-
-    edge_mag = utils.elementwise_add(edge_x, edge_y)
-    edge_mag = utils.img_sqrt(edge_mag)
+    edge_x_squared = utils.elementwise_mul(edge_x, edge_x)
+    edge_y_squared = utils.elementwise_mul(edge_y, edge_y)
+    edge_mag = utils.elementwise_add(edge_x_squared, edge_y_squared)
+    edge_mag = np.sqrt(edge_mag)
 
     return normalize(edge_mag)
 

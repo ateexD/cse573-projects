@@ -88,13 +88,3 @@ def flip2d(img, axis=None):
     if axis is None:
         return flip_x(flip_y(img))
     return None
-
-def img_sqrt(img):
-    """
-    Computes sqrt of an image.
-    """
-    m, n = len(img), len(img[0])
-    for i in range(m):
-        for j in range(n):
-            img[i][j] = img[i][j] ** .5
-    return img
