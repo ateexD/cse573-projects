@@ -16,7 +16,7 @@ Do NOT modify the code provided.
 Do NOT use any API provided by opencv (cv2) and numpy (np) in your code.
 Do NOT import any library (function, module, etc.).
 """
-
+import matplotlib.pyplot as plt
 import argparse
 import copy
 import os
@@ -52,7 +52,8 @@ def parse_args():
 
 
 def read_image(img_path, show=False):
-    """Reads an image into memory as a grayscale array.
+    """
+    Reads an image into memory as a grayscale array.
     """
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if not img.dtype == np.uint8:
@@ -83,7 +84,8 @@ def write_image(img, img_saving_path):
     cv2.imwrite(img_saving_path, img)
 
 def convolve2d(img, kernel):
-    """Convolves a given image and a given kernel.
+    """
+    Convolves a given image and a given kernel.
 
     Steps:
         (1) flips the either the img or the kernel.
@@ -106,10 +108,9 @@ def convolve2d(img, kernel):
     # Filter dimensions
     k, l = len(kernel), len(kernel[0])
     
-    flipped_filter = utils.flip_y(kernel)
-    # flipped_filter = kernel
-    img_padded = utils.zero_pad(img, k - 1, l - 1)
-    # img_padded = utils.flip_y(img_padded)
+    flipped_filter = utils.flip2d(kernel)
+    
+    img_padded = utils.zero_pad(img, k, l)
 
     img_conv = [[0 for _ in range(n)] for _ in range(m)]
     
@@ -121,19 +122,10 @@ def convolve2d(img, kernel):
 
     return img_conv
 
-def normalize_255(img):
-    img_max = max((max(x) for x in img))
-    img_min = min((min(x) for x in img))
 
-    for i in range(len(img)):
-        for j in range(len(img[0])):
-            img[i][j] = (img[i][j] - img_min) * 255.0 / (img_max - img_min)
-            img[i][j] = min(img[i][j], 255.0)
-            img[i][j] = max(img[i][j], 0.)
-    return img
-
-def normalize(img):
-    """Normalizes a given image.
+def normalize(img, val=1.0):
+    """
+    Normalizes a given image.
 
     Hints:
         Normalize a given image using the following equation:
@@ -149,18 +141,22 @@ def normalize(img):
         normalized_img: nested list (int), normalized image.
     """
     # TODO: implement this function.
-    img_max = max((max(x) for x in img))
-    img_min = min((min(x) for x in img))
-
+    img_max = max([max(x) for x in img]) * 1.0
+    img_min = min([min(x) for x in img]) * 1.0
+    val *= 1.0
+    img_min = 0.0
     for i in range(len(img)):
         for j in range(len(img[0])):
-            img[i][j] = (img[i][j] - img_min) * 1.0 / (img_max - img_min)
+            img[i][j] = (img[i][j] - img_min) * val / (img_max - img_min)
+            img[i][j] = max(img[i][j], 0.0)
+            img[i][j] = min(img[i][j], val)
 
     return img
 
 
 def detect_edges(img, kernel, norm=True):
-    """Detects edges using a given kernel.
+    """
+    Detects edges using a given kernel.
 
     Args:
         img: nested list (int), image.
@@ -174,13 +170,14 @@ def detect_edges(img, kernel, norm=True):
     img_edges = convolve2d(img, kernel)
 
     if norm:
-        img_edges = normalize(img_edges)
+        img_edges = normalize(img_edges, 255.0)
     
     return img_edges
 
 
 def edge_magnitude(edge_x, edge_y):
-    """Calculate magnitude of edges by combining edges along two orthogonal directions.
+    """
+    Calculate magnitude of edges by combining edges along two orthogonal directions.
 
     Hints:
         Combine edges along two orthogonal directions using the following equation:
@@ -197,8 +194,12 @@ def edge_magnitude(edge_x, edge_y):
         edge_mag: nested list (int), image containing magnitude of detected edges.
     """
     # TODO: implement this function.
+    edge_x = normalize(edge_x, 255.0)
+    edge_y = normalize(edge_y, 255.0)
+
     edge_x_squared = utils.elementwise_mul(edge_x, edge_x)
     edge_y_squared = utils.elementwise_mul(edge_y, edge_y)
+    
     edge_mag = utils.elementwise_add(edge_x_squared, edge_y_squared)
     edge_mag = np.sqrt(edge_mag)
 
