@@ -144,12 +144,11 @@ def normalize(img):
     img_max = max([max(x) for x in img]) * 1.0
     img_min = min([min(x) for x in img]) * 1.0
 
-    # m, n = len(img), len(img[0])
     img_normalized = img.copy()
 
     for i in range(len(img)):
         for j in range(len(img[0])):
-            img_normalized[i][j] = (float (img[i][j] - img_min)) / (img_max - img_min)
+            img_normalized[i][j] =  (img[i][j] - img_min) * 1.0 / (img_max - img_min)
     return img_normalized
 
 
