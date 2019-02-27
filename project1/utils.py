@@ -88,3 +88,4 @@ def flip2d(img, axis=None):
     if axis is None:
         return flip_x(flip_y(img))
     return None
+    # raise NotImplementedError

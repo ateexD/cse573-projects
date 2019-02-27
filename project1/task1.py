@@ -121,7 +121,7 @@ def convolve2d(img, kernel):
             img_conv[i][j] = sum([sum(x) for x in mul]) * 1.0
 
     return img_conv
-
+    # raise NotImplementedError
 
 def normalize(img):
     """
@@ -150,6 +150,7 @@ def normalize(img):
         for j in range(len(img[0])):
             img_normalized[i][j] =  (img[i][j] - img_min) * 1.0 / (img_max - img_min)
     return img_normalized
+    # raise NotImplementedError
 
 
 def detect_edges(img, kernel, norm=True):
