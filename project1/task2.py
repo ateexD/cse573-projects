@@ -65,6 +65,17 @@ def detect(img, template):
             y: column that the character appears (starts from 0).
     """
     # TODO: implement this function.
+    m, n = len(img), len(img[0])
+    h, k = len(template), len(template)
+
+    for i in range(m - h):
+        for j in range(n - k):
+            cropped = utils.crop(img, i, i + h, j, j + k)
+            corr = np.corrcoef(cropped, template)[0, 1]
+
+            if corr > 0.9:
+                print (i, j)
+
     return coordinates
 
 
