@@ -1,6 +1,6 @@
 # Remove DS_Store
 .DS_Store
 
-hw1/.ipynb_checkpoints/
-hw1/.vscode
-hw1/__pycache__
+*/.ipynb_checkpoints/
+*/.vscode
+*/__pycache__
