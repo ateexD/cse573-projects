@@ -67,7 +67,6 @@ def detect(img, template):
     # TODO: implement this function.
     m, n = len(img), len(img[0])
     h, k = len(template), len(template)
-
     for i in range(m - h):
         for j in range(n - k):
             cropped = utils.crop(img, i, i + h, j, j + k)
