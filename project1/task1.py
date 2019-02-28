@@ -110,7 +110,7 @@ def convolve2d(img, kernel):
     
     flipped_filter = utils.flip2d(kernel)
     
-    img_padded = utils.zero_pad(img, k, l)
+    img_padded = utils.zero_pad(img, 1, 1)
 
     img_conv = [[0 for _ in range(n)] for _ in range(m)]
     
