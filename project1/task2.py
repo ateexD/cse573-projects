@@ -33,7 +33,9 @@ import os
 
 import utils
 from task1 import *   # you could modify this line
+from scipy.signal import convolve2d as c2d
 
+kernel = np.array([[0, 0, 1, 0, 0], [0, 1, 2, 1, 0], [1, 2, -16, 2, 1], [0, 1, 2, 1, 0], [0, 0, 1, 0, 0]], dtype=np.float32) 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="cse 473/573 project 1.")
@@ -66,15 +68,35 @@ def detect(img, template):
     """
     # TODO: implement this function.
     m, n = len(img), len(img[0])
-    h, k = len(template), len(template)
-    for i in range(m - h):
-        for j in range(n - k):
-            cropped = utils.crop(img, i, i + h, j, j + k)
-            corr = np.corrcoef(cropped, template)[0, 1]
+    h, k = len(template), len(template[0])
+    print(h, k)
+    img_copy = np.array(copy.deepcopy(img))
+    img_, template_ = np.array(img) * 1., np.array(template) * 1.
+    # img_, template_ = c2d(img_, kernel, mode='same'), c2d(template, kernel, mode='same')
+    img_, template_ = img_.astype(np.float32), template_.astype(np.float32)
+    
+    coordinates = []
+    
+    for half_len in [10, 9, 8, 7, 6, 5]:
+        res = cv2.matchTemplate(img_, template_, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.7 # a - 0.7, c - 0.7
+        loc = np.where(res >= threshold)
+        print(loc)
+        for pt in zip(*loc[::-1]):
+            cv2.rectangle(img_copy, pt, (pt[0] + h, pt[1] + k), (0, 0, 255), 1)
+        h, k = half_len, half_len
+        template_ = cv2.resize(template_, (half_len, half_len))
+    cv2.imwrite('res.png', img_copy)
 
-            if corr > 0.9:
-                print (i, j)
+    # for i in range(m - h):
+    #     for j in range(n - k):
+    #         cropped = utils.crop(img_, i, i + h, j, j + k)
+    #         corr = np.corrcoef(cropped, template_)[0, 1]
 
+    #         if corr > 0.9:
+    #             coordinates.append([i, j])
+    #             cv2.circle(img_copy, (i, j), 1, (0, 255, 0))
+    # cv2.imwrite("results/circles.jpg", img_copy)
     return coordinates
 
 
@@ -85,11 +107,15 @@ def save_results(coordinates, template, template_name, rs_directory):
     with open(os.path.join(rs_directory, template_name), "w") as file:
         json.dump(results, file)
 
+def get_edge_magnitude(img):
+    edge_x, edge_y = detect_edges(img, sobel_x), detect_edges(img, sobel_y)
+    return edge_magnitude(edge_x, edge_y)
 
 def main():
     args = parse_args()
 
     img = read_image(args.img_path)
+
     template = read_image(args.template_path)
 
     coordinates = detect(img, template)
