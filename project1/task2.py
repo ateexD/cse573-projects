@@ -79,7 +79,7 @@ def detect(img, template):
     
     for half_len in [10, 9, 8, 7, 6, 5]:
         res = cv2.matchTemplate(img_, template_, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.7 # a - 0.7, c - 0.7
+        threshold = 0.7 # a - 0.7, c - 0.8 (0.7 but more false positives)
         loc = np.where(res >= threshold)
         print(loc)
         for pt in zip(*loc[::-1]):
