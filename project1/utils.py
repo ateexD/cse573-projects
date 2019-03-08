@@ -89,3 +89,17 @@ def flip2d(img, axis=None):
         return flip_x(flip_y(img))
     return None
     # raise NotImplementedError
+
+def imresize(img):
+    """Resizes m x n image to (m - 1) x (n - 1) image
+    """
+    m, n = len(img), len(img[0])
+    new_img = [[0 for _ in range(n - 1)] for _ in range(m - 1)]
+    for i in range(m - 1):
+        for j in range(n - 1):
+            pixels = img[i][j], img[i][j + 1], img[i + 1][j], img[i + 1][j + 1]
+            # new_img[i][j] = sum(pixels) / 4.0
+            new_img[i][j] = sum(sorted(pixels)[1: 3]) / 2.0
+
+
+    return new_img
