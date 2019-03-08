@@ -146,6 +146,8 @@ def save_results(coordinates, template, template_name, rs_directory):
 
 
 def ccoeff_matrix(img, temp):
+    # Function to compute normalized cross-
+    # correlation matrix
     def ccoeff(img, temp):
         def coef(temp):
             h, k = len(temp), len(temp[0])
