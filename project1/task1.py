@@ -16,7 +16,6 @@ Do NOT modify the code provided.
 Do NOT use any API provided by opencv (cv2) and numpy (np) in your code.
 Do NOT import any library (function, module, etc.).
 """
-import matplotlib.pyplot as plt
 import argparse
 import copy
 import os
@@ -38,15 +37,25 @@ sobel_y = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]]
 def parse_args():
     parser = argparse.ArgumentParser(description="cse 473/573 project 1.")
     parser.add_argument(
-        "--img_path", type=str, default="",
-        help="path to the image used for edge detection")
+        "--img_path",
+        type=str,
+        default="",
+        help="path to the image used for edge detection",
+    )
     parser.add_argument(
-        "--kernel", type=str, default="sobel",
+        "--kernel",
+        type=str,
+        default="sobel",
         choices=["prewitt", "sobel", "Prewitt", "Sobel"],
-        help="type of edge detector used for edge detection")
+        help="type of edge detector used for edge detection",
+    )
     parser.add_argument(
-        "--result_saving_directory", dest="rs_directory", type=str, default="./results/",
-        help="directory to which results are saved (do not change this arg)")
+        "--result_saving_directory",
+        dest="rs_directory",
+        type=str,
+        default="./results/",
+        help="directory to which results are saved (do not change this arg)",
+    )
     args = parser.parse_args()
     return args
 
@@ -65,23 +74,28 @@ def read_image(img_path, show=False):
     img = [list(row) for row in img]
     return img
 
+
 def show_image(img, delay=1000):
-    cv2.namedWindow('image', cv2.WINDOW_AUTOSIZE)
-    cv2.imshow('image', img)
+    cv2.namedWindow("image", cv2.WINDOW_AUTOSIZE)
+    cv2.imshow("image", img)
     cv2.waitKey(delay)
     cv2.destroyAllWindows()
+
 
 def write_image(img, img_saving_path):
     if isinstance(img, list):
         img = np.asarray(img, dtype=np.uint8)
     elif isinstance(img, np.ndarray):
         if not img.dtype == np.uint8:
-            assert np.max(img) <= 1, "Maximum pixel value {:.3f} is greater than 1".format(np.max(img))
+            assert (
+                np.max(img) <= 1
+            ), "Maximum pixel value {:.3f} is greater than 1".format(np.max(img))
             img = (255 * img).astype(np.uint8)
     else:
         raise TypeError("img is neither a list nor a ndarray.")
 
     cv2.imwrite(img_saving_path, img)
+
 
 def convolve2d(img, kernel):
     """
@@ -107,13 +121,13 @@ def convolve2d(img, kernel):
 
     # Filter dimensions
     k, l = len(kernel), len(kernel[0])
-    
+
     flipped_filter = utils.flip2d(kernel)
-    
+
     img_padded = utils.zero_pad(img, 1, 1)
 
     img_conv = [[0 for _ in range(n)] for _ in range(m)]
-    
+
     for i in range(m):
         for j in range(n):
             img_ = utils.crop(img_padded, i, i + k, j, j + l)
@@ -122,6 +136,7 @@ def convolve2d(img, kernel):
 
     return img_conv
     # raise NotImplementedError
+
 
 def normalize(img):
     """
@@ -148,7 +163,7 @@ def normalize(img):
 
     for i in range(len(img)):
         for j in range(len(img[0])):
-            img_normalized[i][j] =  (img[i][j] - img_min) * 1.0 / (img_max - img_min)
+            img_normalized[i][j] = (img[i][j] - img_min) * 1.0 / (img_max - img_min)
     return img_normalized
     # raise NotImplementedError
 
@@ -170,7 +185,7 @@ def detect_edges(img, kernel, norm=True):
 
     if norm:
         img_edges = normalize(img_edges)
-    
+
     return img_edges
 
 
@@ -195,11 +210,12 @@ def edge_magnitude(edge_x, edge_y):
     # TODO: implement this function.
     edge_x_squared = utils.elementwise_mul(edge_x, edge_x)
     edge_y_squared = utils.elementwise_mul(edge_y, edge_y)
-    
+
     edge_mag = utils.elementwise_add(edge_x_squared, edge_y_squared)
     edge_mag = np.sqrt(edge_mag)
 
     return normalize(edge_mag)
+
 
 def main():
     args = parse_args()
@@ -220,14 +236,23 @@ def main():
 
     img_edge_x = detect_edges(img, kernel_x, False)
     img_edge_x = np.asarray(img_edge_x)
-    write_image(normalize(img_edge_x), os.path.join(args.rs_directory, "{}_edge_x.jpg".format(args.kernel.lower())))
+    write_image(
+        normalize(img_edge_x),
+        os.path.join(args.rs_directory, "{}_edge_x.jpg".format(args.kernel.lower())),
+    )
 
     img_edge_y = detect_edges(img, kernel_y, False)
     img_edge_y = np.asarray(img_edge_y)
-    write_image(normalize(img_edge_y), os.path.join(args.rs_directory, "{}_edge_y.jpg".format(args.kernel.lower())))
+    write_image(
+        normalize(img_edge_y),
+        os.path.join(args.rs_directory, "{}_edge_y.jpg".format(args.kernel.lower())),
+    )
 
     img_edges = edge_magnitude(img_edge_x, img_edge_y)
-    write_image(img_edges, os.path.join(args.rs_directory, "{}_edge_mag.jpg".format(args.kernel.lower())))
+    write_image(
+        img_edges,
+        os.path.join(args.rs_directory, "{}_edge_mag.jpg".format(args.kernel.lower())),
+    )
 
 
 if __name__ == "__main__":
