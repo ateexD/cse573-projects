@@ -60,29 +60,6 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-
-def detect_b(img, template):
-    """Method to detect 'b' for an image and template.
-    """
-    print("Detecting b")
-    m, n = len(img), len(img[0])
-    h, k = len(template), len(template[0])
-    img_copy = cv2.imread("data/characters.jpg")
-
-    img_, template_ = np.array(img) * 1.0, np.array(template) * 1.0
-    img_, template_ = img_.astype(np.float32), template_.astype(np.float32)
-
-    coordinates = []
-    threshold = 0.69
-    res = cv2.matchTemplate(img_, template_, cv2.TM_CCOEFF_NORMED)
-    loc = np.where(res >= threshold)
-
-    for pt in zip(*loc[::-1]):
-        cv2.rectangle(img_copy, pt, (pt[0] + k, pt[1] + h), (0, 0, 255), 1)
-
-    cv2.imwrite("res.png", img_copy)
-
-
 def detect(img, template):
     """Detect a given character, i.e., the character in the template image.
 
@@ -100,7 +77,7 @@ def detect(img, template):
     m, n = len(img), len(img[0])
     h, k = len(template), len(template[0])
 
-    img_copy = cv2.imread("data/characters.jpg")
+    # img_copy = cv2.imread("data/characters.jpg")
 
     a, b, c = (
         read_image("data/a.jpg"),
@@ -129,10 +106,10 @@ def detect(img, template):
             if res[i][j] >= threshold:
                 loc.append([j, i])
 
-    for pt in loc[::-1]:
-        cv2.rectangle(img_copy, (pt[0], pt[1]), (pt[0] + k, pt[1] + h), (0, 0, 255), 1)
+    # for pt in loc[::-1]:
+    #     cv2.rectangle(img_copy, (pt[0], pt[1]), (pt[0] + k, pt[1] + h), (0, 0, 255), 1)
 
-    cv2.imwrite("res.png", img_copy)
+    # cv2.imwrite("res.png", img_copy)
 
     return loc
 
