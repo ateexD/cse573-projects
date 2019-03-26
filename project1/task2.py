@@ -77,7 +77,6 @@ def detect(img, template):
     m, n = len(img), len(img[0])
     h, k = len(template), len(template[0])
 
-    # img_copy = cv2.imread("data/characters.jpg")
 
     a, b, c = (
         read_image("data/a.jpg"),
@@ -106,10 +105,8 @@ def detect(img, template):
             if res[i][j] >= threshold:
                 loc.append([j, i])
 
-    # for pt in loc[::-1]:
-    #     cv2.rectangle(img_copy, (pt[0], pt[1]), (pt[0] + k, pt[1] + h), (0, 0, 255), 1)
 
-    # cv2.imwrite("res.png", img_copy)
+    cv2.imwrite("res.png", img_copy)
 
     return loc
 
