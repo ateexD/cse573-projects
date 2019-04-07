@@ -1,13 +1,14 @@
-import cv2
-import sys
 import glob
+import sys
+from functools import cmp_to_key
+
 import numpy as np
 
-from plot_utils import convert_and_plot
-from matcher import get_good_matches, kNN_matcher
+import cv2
 from img_utils import get_direction, get_homography, ransac
+from matcher import get_good_matches, kNN_matcher
+from plot_utils import convert_and_plot
 
-from functools import cmp_to_key
 
 class Image:
     """
@@ -139,5 +140,3 @@ def stitch_images(path_to_directory, verbose=False):
 if __name__ == "__main__":
     path = sys.argv[1]
     cv2.imwrite(path + "/panorama.jpg", stitch_images(sys.argv[1], verbose=False))
-
-
