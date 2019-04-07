@@ -37,7 +37,7 @@ def stitch_images(path_to_directory, verbose=False):
     Returns - None
 
     This function reads the images from the given
-    path, aligns it and writes result into panaroma.jpg
+    path, aligns it and writes result into panorama.jpg
     """
     # Get image paths in given directory
     image_paths = glob.glob(path_to_directory + "/*")
@@ -45,7 +45,7 @@ def stitch_images(path_to_directory, verbose=False):
     # Read all these images with cv2.imread
     images = [cv2.imread(image_path) 
               for image_path in image_paths 
-              if "panaroma" not in image_path]
+              if "panorama" not in image_path]
     
     # Sanity check
     assert(len(images) != 0)
@@ -116,28 +116,28 @@ def stitch_images(path_to_directory, verbose=False):
         # Get homography matrix and ransac
         H, _ = ransac(matches, I1.kp, I2.kp)
 
-        # Construct panaroma
-        panaroma = warp_two_images(I1, I2, np.linalg.inv(H))
-        return panaroma
+        # Construct panorama
+        panorama = warp_two_images(I1, I2, np.linalg.inv(H))
+        return panorama
     
     # assert condition is assertive
     assert(2 <= len(I) <= 3)
 
 
-    # If 2 images, construct panaroma
+    # If 2 images, construct panorama
     if len(I) == 2:
-        panaroma = stitch_2_images(I[0], I[1])
+        panorama = stitch_2_images(I[0], I[1])
     
-    # If 3 images, construct 2 panaromas &
+    # If 3 images, construct 2 panoramas &
     # return final one
     else:
-        panaroma = stitch_2_images(I[1], I[2])
-        panaroma = stitch_2_images(I[0], panaroma)
+        panorama = stitch_2_images(I[1], I[2])
+        panorama = stitch_2_images(I[0], panorama)
         
-    return panaroma
+    return panorama
 
 if __name__ == "__main__":
     path = sys.argv[1]
-    cv2.imwrite(path + "/panaroma.jpg", stitch_images(sys.argv[1], verbose=False))
+    cv2.imwrite(path + "/panorama.jpg", stitch_images(sys.argv[1], verbose=False))
 
 
