@@ -41,7 +41,9 @@ def get_good_matches(matches, ratio_test_param=0.75):
             ratio_test_param - Lowe's ratio test parameter
     """
     good_matches = []
+    # Iter through matches
     for m, n in matches:
+        # Perform ratio threshold
         if m.distance < ratio_test_param * n.distance:
             good_matches.append(m)
     return good_matches
