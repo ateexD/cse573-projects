@@ -6,3 +6,5 @@
 
 ## Project 2 - Image Stitching
     * Implemented RANSAC Algorithm to compute homography
+
+## Project 3 - Face Detection (Underway)
