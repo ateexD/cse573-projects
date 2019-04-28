@@ -3,6 +3,7 @@ import functools
 import numpy as np
 
 from matcher import *
+from plot_utils import convert_and_plot
 
 # Homography function
 def get_homography(point_group_1, point_group_2, verbose=False):
@@ -162,7 +163,7 @@ def get_direction(kp1, kp2, des1, des2, img1, img2, verbose=True):
             des[1 & 2] - Descriptors from images 1 & 2
             img[1 & 2] - Imgaes 1 & 2
             
-    Returns - Left & Right images
+    Returns - Left & Right image comparator-like output
     """
     _, w, _ = img2.shape
     
@@ -184,7 +185,6 @@ def get_direction(kp1, kp2, des1, des2, img1, img2, verbose=True):
 
             distance = np.linalg.norm(point1 - point2)
             distances.append(distance)
-            
         return distances
         
     left_distances = get_distances(kp1, kp2, des1, des2)
